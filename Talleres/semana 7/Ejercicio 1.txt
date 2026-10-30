@@ -1,0 +1,50 @@
+#include "pch.h"
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+int arr[10000];
+//int aux[1000]; 
+/*
+Entrada: [25, 30, 22, 40, 18]
+Salida: [18, 40, 22, 30, 25]
+*/
+int n;
+
+
+// posicion 0: 4 [4, [recursividad]]  
+// po 1: 3 -> recursividad(i+1) [2 1]
+int** recursividad(int posi, int arreglo[]) { // [ 1 2 3 4]
+    // caso base: 
+    int** ar = new int* [n - posi];
+    if (posi == n - 1) { // size es 1 
+        ar[0] = new int(arreglo[n - posi - 1]); // arreglo de 0; 
+        return ar;
+    }
+    int** aux = recursividad(posi + 1, arreglo);
+    for (int i = 1; i < n - posi; i++) {
+        ar[i] = aux[i - 1];
+    }
+    ar[0] = new int(arreglo[n - posi - 1]); delete[] aux;
+    return ar;
+}
+
+int main() {
+    cout << "Ingrese el numero de datos: "; cin >> n; 
+    cout << "Ingrese los n datos: "; 
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i]; 
+    }
+
+    system("pause>0"); 
+    cout << "Datos: [ "; 
+    for (int i = 0; i < n; i++)cout << arr[i] << " ";
+    cout << " ]\n"; 
+    int** arr2 = recursividad(0, arr); 
+    cout << "Datos: [ ";
+    for (int i = 0; i < n; i++)cout << *arr2[i] << " ";
+    cout << " ]\n";
+    
+}

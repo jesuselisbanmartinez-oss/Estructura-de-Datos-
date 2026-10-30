@@ -1,0 +1,55 @@
+//problema 7
+#include "pch.h"
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+using namespace System;
+
+struct Cliente {
+	string nombre;
+	int dni;
+};
+
+Cliente clientes[] = {
+ {"Juan", 12345678},
+ {"Ana", 87654321},
+ {"Ana", 47554499},
+ {"Carlos", 83746873}, 
+ {"Maria", 12345678},
+ {"Pedro", 45678901} ,
+ {"Ana", 45678901 },
+ {"Luis", 12345678},
+};
+
+void shellnombre(int n) {
+	for (int gap = n / 2; gap > 0; gap /= 2) {
+		for (int i = gap; i < n; i++) {
+			Cliente temp = clientes[i];
+			int j;
+			for (j = i; j >= gap; j -= gap) {
+				bool flag = 0; // si hubo swap
+				if (clientes[j - gap].nombre > temp.nombre) {
+					flag = 1;
+				}
+				else if (clientes[j - gap].nombre == temp.nombre && clientes[j - gap].dni > temp.dni) {
+					flag = 1; 
+				}
+				if (flag)clientes[j] = clientes[j - gap];
+				else break; // optimizacion de bubblesort 
+			}
+			clientes[j] = temp;
+		}
+	}
+
+}
+int main() {
+	int  n = sizeof(clientes) / sizeof(clientes[0]);
+	shellnombre(n);
+
+	cout << "Clientes ordenados:" << endl;
+	for (int i = 0; i < n; i++) {
+		cout << "NOMBRE: " << clientes[i].nombre << ", DNI: " << clientes[i].dni << endl;
+	}
+}

@@ -1,0 +1,216 @@
+
+#include "pch.h" 
+#include <iostream>
+#include <vector>
+#include <string>
+#include <cstdlib> 
+#include <ctime>  
+
+using namespace std;
+using namespace System;
+
+class Producto {
+private:
+    string codigo;
+    string nombre_equipo;
+    int tipo_equipo;
+    int stock;
+    string marca;
+    string modelo;
+    int requiere_mantenimiento;
+    int anio_fabricacion;
+public:
+    Producto(string c, string n, int tq, int s, string m, string mod, int rm, int anio) {
+        codigo = c; nombre_equipo = n; tipo_equipo = tq;
+        stock = s; marca = m; modelo = mod; requiere_mantenimiento = rm; anio_fabricacion = anio;
+    }
+
+    bool EsImportado() {
+        return (tipo_equipo == 1);
+    }
+
+    void Listar() {
+        cout << "Codigo de producto: " << codigo
+            << " | Nombre: " << nombre_equipo
+            << " | Tipo: " << ((tipo_equipo == 1) ? "Importado" : "Nacional")
+            << " | Stock: " << stock
+            << " | Marca: " << marca
+            << " | Modelo: " << modelo
+            << " | Req. Mantenimiento: " << ((requiere_mantenimiento == 1) ? "Si" : "No")
+            << " | Anio: " << anio_fabricacion << "\n";
+    }
+
+    bool Requiere_mantenimiento() {
+        return (requiere_mantenimiento == 1);
+    }
+    int getStock() { return stock; }
+    int getAnio() { return anio_fabricacion; }
+};
+
+template<class T>
+class Nodo {
+public:
+    Nodo<T>* next;
+    T dato;
+    Nodo(T d) : dato(d), next(nullptr) {}
+};
+
+template <class T>
+class ListaEnlazada {
+private:
+    Nodo<T>* cabeza;
+public:
+    ListaEnlazada() { cabeza = nullptr; }
+
+    void AnadirDato(T dato) {
+        if (cabeza == nullptr) {
+            cabeza = new Nodo<T>(dato);
+            return;
+        }
+        Nodo<T>* aux = cabeza;
+        while (aux->next != nullptr) {
+            aux = aux->next;
+        }
+        aux->next = new Nodo<T>(dato);
+    }
+
+    void Importado() {
+        cout << "Lista de productos de tipo \"Importado\": \n";
+        Nodo<T>* aux = cabeza;
+        while (aux != nullptr) {
+            if (aux->dato.EsImportado()) {
+                aux->dato.Listar();
+            }
+            aux = aux->next;
+        }
+    }
+
+    void Requieren_Mantenimiento() {
+        cout << "Cantidad de productos que requieren mantenimiento: ";
+        int cnt = 0;
+        Nodo<T>* aux = cabeza;
+        while (aux != nullptr) {
+            if (aux->dato.Requiere_mantenimiento()) {
+                cnt++;
+            }
+            aux = aux->next;
+        }
+        cout << cnt << "\n";
+    }
+
+    void Equipos_ordenados() {
+        Nodo<T>* aux = cabeza;
+        vector<T> arreglo;
+
+        while (aux != nullptr) {
+            arreglo.push_back(aux->dato);
+            aux = aux->next;
+        }
+
+        int cnt = arreglo.size();
+        for (int i = 0; i < cnt; i++) {
+            for (int j = i + 1; j < cnt; j++) {
+                if (arreglo[i].getAnio() > arreglo[j].getAnio()) {
+                    T auxx = arreglo[i];
+                    arreglo[i] = arreglo[j];
+                    arreglo[j] = auxx;
+                }
+            }
+        }
+
+        cout << "Listado de productos por su anio de fabricacion: \n";
+        for (int i = 0; i < cnt; i++) {
+            arreglo[i].Listar();
+        }
+    }
+
+    void EquipoMenorStock() {
+        if (cabeza == nullptr) {
+            cout << "No hay productos disponibles\n";
+            return;
+        }
+
+        int minn = cabeza->dato.getStock();
+        T menorStock = cabeza->dato;
+
+        Nodo<T>* aux = cabeza->next;
+        while (aux != nullptr) {
+            if (aux->dato.getStock() < minn) {
+                minn = aux->dato.getStock();
+                menorStock = aux->dato;
+            }
+            aux = aux->next;
+        }
+        cout << "\nEl equipo con menor stock es:\n";
+        menorStock.Listar(); // <-- Aquí faltaba tu impresión del producto
+    }
+};
+
+int menu() {
+    int op;
+    cout << "\n------------------ Menu ------------------\n";
+    cout << "[1] Listar los equipos importados\n";
+    cout << "[2] Mostrar cantidad de equipos que requieren mantenimiento\n";
+    cout << "[3] Equipos Ordenados por anio de fabricacion\n";
+    cout << "[4] Equipo con menor Stock\n";
+    cout << "[5] Salir\n";
+    cout << "Seleccione una opcion para continuar: ";
+    cin >> op;
+    return op;
+}
+
+string nombres[] = { "Celular L8", "Laptop Y767", "Computador X683", "Computador I343", "Computador X633", "iPad", "Lenovo X63", "Yoga 7", "sdfdf", "dhfbusd" };
+string marcas[] = { "Apple", "Lenovo", "Hp" };
+
+int main() {
+    srand(time(nullptr));
+    ListaEnlazada<Producto>* lista = new ListaEnlazada<Producto>();
+
+    for (int i = 0; i < 10; i++) {
+        string codigo = to_string(i);
+        string nombre = nombres[i];
+        int tipo = rand() % 2 + 1;
+        int stock = rand() % (100 - 3 + 1) + 3;
+        string marca = marcas[rand() % 3];
+        string modelo = nombres[i];
+        int requiere_mantenimiento = rand() % 2 + 1;
+        int anio = rand() % (2026 + 1 - 2020) + 2020;
+
+        Producto prod = Producto(codigo, nombre, tipo, stock, marca, modelo, requiere_mantenimiento, anio);
+        lista->AnadirDato(prod);
+    }
+
+    bool ejecutando = true;
+    while (ejecutando) {
+        system("cls");
+        int op = menu();
+        system("cls");
+
+        switch (op) {
+        case 1:
+            lista->Importado();
+            break;
+        case 2:
+            lista->Requieren_Mantenimiento();
+            break;
+        case 3:
+            lista->Equipos_ordenados();
+            break;
+        case 4:
+            lista->EquipoMenorStock();
+            break;
+        case 5:
+            ejecutando = false;
+            break;
+        default:
+            cout << "Opcion invalida.\n";
+            break;
+        }
+        if (ejecutando) {
+            system("pause");
+        }
+    }
+
+    delete lista;
+    return 0;
+}

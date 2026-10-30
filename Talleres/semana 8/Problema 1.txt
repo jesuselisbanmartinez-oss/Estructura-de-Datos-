@@ -1,0 +1,84 @@
+// Source: https://usaco.guide/general/io
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Examen{
+    public: 
+    string codigo_alumno; 
+    int nota; 
+    int tiempo_entrega; 
+
+    Examen(string c, int n, int t){
+        codigo_alumno = c; 
+        nota=n; 
+        tiempo_entrega= t; 
+    }
+    void imprimir(){
+        cout << "Codigo: " << codigo_alumno << "-Nota: " << nota << "-Tiempo: " << tiempo_entrega; 
+    }
+}; 
+
+void merge(vector<Examen>& lista, int l, int h, int mid){
+    vector<Examen> v1, v2; 
+    for(int i=l; i <= mid; i++)v1.push_back(lista[i]);
+    for(int i=mid+1; i <= h; i++)v2.push_back(lista[i]);
+
+    int ind=l, ind1=0, ind2=0; 
+
+    while(ind1 < int(v1.size()) && ind2 < int(v2.size())){
+        // prioridad 1: la calificacion 
+        // prioridad 2(en el caso que la cal sea la misma): tiempo de entrega
+        if(v1[ind1].nota > v2[ind2].nota|| (v1[ind1].nota == v2[ind2].nota && v1[ind1].tiempo_entrega <= v2[ind2].tiempo_entrega) ){ // las notas son iguales  
+            lista[ind] = v1[ind1]; 
+            ind1++; 
+        }
+        else{
+            lista[ind]= v2[ind2]; 
+            ind2++; 
+        }
+        ind++; 
+    }
+
+    //uno de los sub-arreglos estan vacios 
+    while(ind1 < int(v1.size())){
+        lista[ind]= v1[ind1]; ind1++; ind++;
+    }
+    while(ind2 < int(v2.size())){ 
+        lista[ind]= v2[ind2]; ind2++; ind++;
+    }
+    return; 
+}
+void merge_sort(vector<Examen>& lista, int l, int h){
+    if(l >= h)return;
+
+    int mid = l + (h - l)/2; 
+    merge_sort(lista, l, mid); 
+    merge_sort(lista, mid+1, h);  
+
+    merge(lista, l, h, mid); 
+    return; 
+}
+
+int main() {
+	vector<Examen> lista= {
+        Examen("U2021001",	15,	90),
+        Examen("U2021002",	18,	85),
+        Examen("U2021003",	12,	120),
+        Examen("U2021004",	15,	80),
+        Examen("U2021005",	20,	60),
+        Examen("U2021006",	18,	90),
+        Examen("U2021007",	10,	110),
+        Examen("U2021008",	12,	100),
+        Examen("U2021009",	14,	95),
+        Examen("U2021010",	20,	65)
+    }; 
+
+    cout << "registro de los examenes ordenados: \n";
+    merge_sort(lista, 0, int(lista.size())-1); 
+    for(Examen i: lista){
+        i.imprimir(); 
+        cout << "\n"; 
+    } 
+    cout << endl; 
+}

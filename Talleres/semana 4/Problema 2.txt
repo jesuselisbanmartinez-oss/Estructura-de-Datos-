@@ -1,0 +1,63 @@
+#include "pch.h"
+#include "iostream"
+#include "vector"
+#include "string"
+
+using namespace std; 
+using namespace System;
+
+
+int recursividad(int numero) {
+	if (numero < 1) return 0; 
+	int suma = 0; 
+	suma += (numero % 10); // extraer el ultimo digito
+	suma += recursividad(numero / 10); 
+	//suma del numero sin considerar el ultimo digito
+	return suma; 
+}
+/*
+numero = 723
+
+recursividad(723): suma+=(3); suma+= recursividad(72)
+recursividad(72) : suma+=(2); suma+=recursividad(7);
+recursividad(7); suma+=(7); suma+= recursvidad(0); 
+recursividad(0) - > return 0; 
+
+recursividad(0) - > return 0;
+recursividad(7): suma= 7; suma+= 0;  || suma-> 7; 
+recursividad(72) : suma=2; suma+=7;  || suma-> 9; 
+recursividad(723): suma=3; suma+= 9 || suma-> 12;
+RETURN 12; 
+
+*/
+
+
+int main(){
+	string codigo; 
+	cout << "Ingrese el codigo de lote: "; cin >> codigo; 
+	auto verificar_impar = [](string codigo) {
+		cout << (((codigo[2] - '0') % 2 != 0) ? "Codigo Valido\n" : "Codigo Ivalido\n"); 
+	}; 
+	verificar_impar(codigo); 
+
+	int a, b; 
+	cout << "Ingrese Turno 1 y 2: "; cin >> a >> b; 
+	auto suma = [](int a, int b) -> int {
+		return a + b;
+		}; 
+	cout << "Suma de turnos : " << suma(a,b) << endl; 
+
+	cout << "Ingrese numero: "; 
+	int numero; cin >> numero; 
+	// Recursividad en lambda 
+
+	auto sumlambda = [](int numero, auto sumlambda) -> int {
+		if (numero < 1) return 0;
+		int suma = 0;
+		suma += (numero % 10); // extraer el ultimo digito
+		suma += sumlambda(numero / 10, sumlambda);
+		//suma del numero sin considerar el ultimo digito
+		return suma;
+	};
+	cout << "Suma de digitos: " << sumlambda(numero, sumlambda);
+}

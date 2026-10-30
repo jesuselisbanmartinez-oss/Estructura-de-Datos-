@@ -1,0 +1,103 @@
+#include "pch.h"
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+using namespace System;
+
+template <class T>
+class Nodo {
+public: 
+	T dato; 
+	Nodo<T>* next; 
+	Nodo(T d) {
+		this->dato = d; 
+		next = nullptr;
+	}
+	void ImprimirDato() {
+		cout << dato << endl;
+	}
+};
+
+template <class T>
+class Pila {
+private: 
+	Nodo<T>* tope; 
+public:
+	Pila() {
+		tope = nullptr; 
+	}
+	bool esVacia() {
+		return tope == nullptr; 
+	}
+	T desapilar() {
+		if (esVacia())return NULL; 
+		Nodo<T>* aux = tope;
+		tope = tope->next;
+		return aux->dato; 
+	}
+	bool apilar(T dato) {
+		// si la pila esta vacia
+		Nodo<T>* nodo = new Nodo<T>(dato); 
+		if (esVacia()) {
+			tope = nodo; return 1; 
+		}
+		// si hay un elemento en la pila // pila act: 1->2->3     queremos insertar: 9
+		nodo->next = tope; // 9->  1->2->3
+		tope = nodo; return 1; 
+	}
+	// T para ver el dato del tope sin desapilarlo
+};
+
+template<class T> 
+class Cola {
+private:
+	Nodo<T>* inicio;
+	Nodo<T>* fin; 
+public: 
+	Cola() {
+		inicio = nullptr; 
+		fin = nullptr; 
+	}
+	bool esVacia() {
+		return inicio == nullptr; 
+	}
+	void encolar(T dato) { 
+		Nodo<T>* nodo = new Nodo<T>(dato);
+		if (esVacia()) { //opcion 1: la cola está vacía 
+			inicio = nodo; // cola: 1
+			fin = nodo;
+		} else { //Ya existen al menos 1 elemento en la cola 
+			fin->next = nodo; //alteramos el fin 
+			fin = nodo; //ahora, el nuevo final es el el. que insertamos
+		} 
+	}
+	T desencolar() {
+		if (esVacia())return NULL;
+		Nodo<T>* nodo = inicio; 
+		inicio = inicio->next; // actualizar la cola 
+		return nodo->dato; 
+	}
+
+};
+int main() {
+	Pila<int>* pila= new Pila<int>(); 
+	Cola<int>* cola = new Cola<int>(); 
+	cout << "COMPORTAMIENTO DE PILA VS COLA";
+	cout << "\nOrden de insercion: 3, 2, 1, 9\n"; cout << endl; 
+	pila->apilar(3); cola->encolar(3); 
+	pila->apilar(2);cola->encolar(2);
+	pila->apilar(1);cola->encolar(1);
+
+	pila->apilar(9);cola->encolar(9);
+	cout << "Pila: \n"; 
+	for (int i = 0; i < 4; i++) {
+		cout << pila->desapilar() << "->";
+	}
+	cout << "NULL\n"; cout << endl; 
+	cout << "Cola: \n"; 
+	while (!cola->esVacia()) {
+		cout << cola->desencolar() << "->";
+	}cout << "NULL\n";
+}

@@ -1,0 +1,187 @@
+#include "pch.h"
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+using namespace System;
+
+//T = int 
+template <class T>
+class Nodo {
+public:
+	T dato;
+	Nodo<T>* next;
+	Nodo(T dat) { next = nullptr; dato = dat; }
+};
+
+template<class T>
+class ListaEnlazada {
+private:
+	Nodo<T>* cabeza;
+public:
+	ListaEnlazada() { cabeza = nullptr; }
+
+	void Anadir(T dato) {
+		if (dato < 100) {
+			cout << "No se ha podido anadir el dato. \n";
+			return;
+		}
+		if (cabeza == nullptr) {
+			cabeza = new Nodo<T>(dato);
+			cout << "El dato ha sido anadido.\n";
+			return;
+		}
+		Nodo<T>* aux = cabeza;
+		while (aux->next != nullptr) {
+			aux = aux->next;
+		}
+		aux->next = new Nodo<T>(dato);
+		cout << "El dato ha sido anadido.\n";
+	}
+
+	void MostrarMultiplos() {
+		cout << "Valores multiplos de 5: ";
+		Nodo<T>* aux = cabeza;
+		while (aux != nullptr) {
+			if (aux->dato % 5 == 0) {
+				cout << aux->dato << " ";
+			}
+			aux = aux->next;
+		}
+		cout << endl;
+	}
+
+	void EliminarLectura(int posicion) {
+		if (cabeza == nullptr) {
+			cout << "Lista vacia\n";
+			return;
+		}
+		if (posicion % 2 == 0) {
+			cout << "Posicion invalida para borrar. \n";
+			return;
+		}
+
+		bool yes = 0; //se ha podido borrar un valor 
+		int n = 0; //valores procesados
+
+		if (posicion == 0) {
+			Nodo<T>* temp = cabeza;
+			cabeza = cabeza->next;
+			delete temp;
+			return;
+		}
+
+		Nodo<T>* actual = cabeza;
+		for (int i = 0; i < posicion - 1; i++) { //recorrer hasta posicion - 1 
+			if (actual == nullptr) break;
+			actual = actual->next;
+		} //opciones de retorno: FINAL || nullptr || PENULTIMO->FINAL || ANTEPENULTIMO -> POSICION-> FINAL
+
+		if (actual == nullptr || actual->next == nullptr) {
+			cout << "No existe esa posicion en la lista enlazada.\n";
+			return;
+		}
+
+		Nodo<T>* temp = actual->next;
+		// obviar el valor de el medio 
+		actual->next = actual->next->next;
+		delete temp;
+	}
+
+	void Modificar(int posicion, int valor) {
+		if (valor < 100 || valor > 500)return; 
+		int cnt = 0;
+		Nodo<T>* aux = cabeza;
+		for (int i = 0; i < posicion; i++) {
+			if (aux == nullptr) break;
+			aux = aux->next;
+		}
+		if (aux == nullptr) {
+			cout << "Posicion no valida.\n";
+			return;
+		}
+		aux->dato = valor;
+		cout << "Posicion actualizada. \n";
+	}
+
+	void ImprimirTodo() {
+		cout << "Lista actual: ";
+		Nodo<T>* aux = cabeza;
+		while (aux != nullptr) {
+			cout << aux->dato << " ";
+			aux = aux->next;
+		}
+		cout << "\n";
+	}
+};
+
+int menu() {
+	//menu 
+	system("cls"); 
+	int op;
+	cout << "             MENU             \n";
+	cout << "1. Anadir dato (>= 100)\n";
+	cout << "2. Mostrar multiplos de 5\n";
+	cout << "3. Eliminar por posicion\n";
+	cout << "4. Modificar por posicion (<=500)\n";
+	cout << "5. Mostrar todos los datos\n";
+	cout << "6. Salir\n";
+	cout << "Seleccione una opcion: ";
+	cin >> op;
+	return op;
+}
+
+int main() {
+	ListaEnlazada<int> lista;
+
+	lista.Anadir(105);
+	lista.Anadir(112);
+	lista.Anadir(120);
+	lista.Anadir(137);
+	lista.Anadir(150);
+
+	int op = 0;
+	while (op != 6) {
+		op = menu();
+		switch (op) {
+		case 1: {
+			int val;
+			cout << "Ingrese el valor a anadir: ";
+			cin >> val;
+			lista.Anadir(val);
+			break;
+		}
+		case 2:
+			lista.MostrarMultiplos();
+			break;
+		case 3: {
+			int pos;
+			cout << "Ingrese la posicion a eliminar: ";
+			cin >> pos;
+			lista.EliminarLectura(pos);
+			break;
+		}
+		case 4: {
+			int pos, val;
+			cout << "Ingrese la posicion a modificar: ";
+			cin >> pos;
+			cout << "Ingrese el nuevo valor: ";
+			cin >> val;
+			lista.Modificar(pos, val);
+			break;
+		}
+		case 5:
+			lista.ImprimirTodo();
+			break;
+		case 6:
+			cout << "Saliendo del programa...\n";
+			break;
+		default:
+			cout << "Opcion invalida, intente de nuevo.\n";
+			break;
+		}
+		system("pause>0"); 
+	}
+	return 0;
+}

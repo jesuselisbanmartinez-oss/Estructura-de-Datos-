@@ -1,0 +1,89 @@
+#include "pch.h"
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+using namespace System;
+
+template <class T>
+class Nodo {
+public: 
+	T dato; 
+	Nodo<T>* next; 
+	Nodo(T d) {
+		this->dato = d; 
+		next = nullptr;
+	}
+	void ImprimirDato() {
+		cout << dato << endl;
+	}
+};
+
+template<class T> 
+class Cola {
+private:
+	Nodo<T>* inicio;
+	Nodo<T>* fin; 
+public: 
+	Cola() {
+		inicio = nullptr; 
+		fin = nullptr; 
+	}
+	bool esVacia() {
+		return inicio == nullptr; 
+	}
+	T verTop() {
+		if ( esVacia() ) {
+			return NULL; 
+		}
+		return inicio->dato;
+	}
+	void encolar(T dato) { 
+		Nodo<T>* nodo = new Nodo<T>(dato);
+		if (esVacia()) { //opcion 1: la cola está vacía 
+			inicio = nodo; // cola: 1
+			fin = nodo;
+		} else { //Ya existen al menos 1 elemento en la cola 
+			fin->next = nodo; //alteramos el fin 
+			fin = nodo; //ahora, el nuevo final es el el. que insertamos
+		} 
+	}
+	T desencolar() {
+		if (esVacia())return NULL;
+		Nodo<T>* nodo = inicio; 
+		inicio = inicio->next; // actualizar la cola 
+		return nodo->dato; 
+	}
+	void encolarmultiplicacion(Cola<T>*& cola1, Cola<T>*& cola2) {
+		Nodo<T>* nodo = new Nodo<T>(cola1->desencolar() * cola2->desencolar());
+		if (esVacia()) {
+			inicio = nodo; 
+			fin = nodo;
+		}
+		else {  
+			fin->next = nodo; 
+			fin = nodo; 
+		}
+	}
+};
+
+int val[] = { 2,4,5, 6,      3, 2, 4, 3 };
+int main() {
+	Cola<int>* colaA = new Cola<int>(); 
+	Cola<int>* colaB = new Cola<int>(); 
+	Cola<int>* ColaResultante = new Cola<int>();
+	for (int i = 0; i < 4; i++) {
+		colaA->encolar(val[i]);
+	}
+	for (int i = 4; i < 8; i++) {
+		colaB->encolar(val[i]);
+	}
+	cout << "Cola A     Cola B     Cola Resultado" << endl;
+	for (int i = 0; i < 4; i++) {
+		cout << colaA->verTop() << "          " << colaB->verTop() << "          ";
+		ColaResultante->encolarmultiplicacion(colaA, colaB); 
+		cout << ColaResultante->verTop() << endl;
+		ColaResultante->desencolar(); 
+	}
+}

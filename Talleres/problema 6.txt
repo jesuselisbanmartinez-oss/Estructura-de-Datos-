@@ -1,0 +1,126 @@
+//problema 6
+#include "pch.h"
+#include <iostream>
+#include <ctime> // para comparar el tiempo de ejecucion 
+#include <chrono>
+#include <cstdlib>
+#include <vector>
+#include <string>
+
+using namespace std;
+using namespace std::chrono;
+using namespace System;
+
+
+int arr2[10000];  // arreglo desordenado 
+int arr[10000]; // copia del a
+int n = 10000; 
+void copiarARR() {
+	for (int i = 0; i < n; i++)arr[i] = arr2[i]; 
+}
+//  Burbuja, Inserción, Selección y Shell
+void burbuja() {
+	int comparaciones = 0; 
+	auto inicio = high_resolution_clock::now(); 
+	for (int i = 0; i < n; i++) {
+		for (int j = i+1; j < n; j++) {
+			comparaciones++; 
+			if (arr[i] > arr[j]) {
+				int temp = arr[j];
+				arr[j] = arr[i];
+				arr[i] = temp;
+			}
+		}
+	}
+	auto fin = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(fin - inicio);
+	cout << "Burbuja: "; 
+	cout << duration.count() << " ms , " << comparaciones << " comparaciones" << endl;
+
+}
+void insercion() {
+	auto inicio = high_resolution_clock::now();
+	int comparaciones = 0; 
+	for (int i = 1; i < n; i++) {
+
+		int key = arr[i]; 
+		int j = i - 1;
+		while (j > 0) {
+			comparaciones++; 
+			if (arr[j] > key) {
+				arr[j + 1] = arr[j];
+				j--;
+			}
+			else {
+				break;
+			}
+		}
+		arr[j + 1] = key;
+	}
+	auto fin = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(fin - inicio);
+	cout << "Insercion: ";
+	cout << duration.count() << " ms , " << comparaciones << " comparaciones" << endl;
+
+}
+void seleccion() { // por la posicion i, buscamos el i-nésimo 
+	//valor más pequeño del arreglo
+	auto inicio = high_resolution_clock::now();
+	int comparaciones = 0;
+	for (int i = 0; i < n - 1; i++) {
+		int min_index = i; 
+		for (int j = i + 1; j < n; j++) { 
+			comparaciones++; 
+			if (arr[j] < arr[min_index]) {
+				min_index = j; 
+			}
+		}
+		swap(arr[i], arr[min_index]);
+	}
+	auto fin = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(fin - inicio);
+	cout << "Seleccion: ";
+	cout << duration.count() << " ms , " << comparaciones << " comparaciones" << endl;
+}
+
+
+void shell() {
+	auto inicio = high_resolution_clock::now();
+	int comparaciones = 0;
+	for (int gap = n / 2; gap > 0; gap /= 2) { // logaritmico n/2/2/2 
+		// 50/ 2 = 25 / 2 = 12/2 ... 
+		for (int i = gap; i < n; i++) {
+			int temp = arr[i];
+			int j;
+			for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+				arr[j] = arr[j - gap];
+				comparaciones++; 
+			}
+			arr[j] = temp;
+		}
+	}
+	auto fin = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(fin - inicio);
+	cout << "Shell: ";
+	cout << duration.count() << " ms , " << comparaciones << " comparaciones" << endl;
+}
+
+
+int main(){
+	srand(time(nullptr)); 
+	for (int i = 0; i < n; i++) {
+		int j = rand() % (500) + 1;
+		arr2[i] = j; 
+	}
+	cout << "COMPARACION DE TIEMPOS DE EJECUCION DE LOS ALGORITMOS DE ORDENAMIENTO" << endl;
+	burbuja(); 
+	copiarARR(); 
+	insercion(); 
+	copiarARR(); 
+	seleccion(); 
+	copiarARR(); 
+	shell(); 
+	copiarARR(); 
+
+	
+}

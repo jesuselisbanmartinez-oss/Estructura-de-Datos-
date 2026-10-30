@@ -1,0 +1,133 @@
+#include "pch.h"
+#include "iostream"
+#include "string"
+
+using namespace std; 
+using namespace System;
+
+int arr[] = { 1,1, 3, 4, 5, 6, 7, 8, 9, 2, 345, 234, 4 };
+bool recursivo_inverso(int posi, int obj) { // 1. CASO BASE; 2. Cuerpo del algoritmo 
+    if (posi == 10) {
+        return 0; //CASO BASE; 
+    }
+    if (arr[posi] == obj)return true; 
+    return recursivo_inverso(posi + 1, obj); 
+}
+
+
+template <class T>
+class Nodo {
+public: 
+    T dato; 
+    Nodo* next; // conexión que tiene 
+    Nodo(T datoo) {
+        next = nullptr; 
+        dato = datoo; 
+    }
+    void imprimirDato() {
+        cout << dato;
+    }
+   // Nodo(T datoo): dato(datoo), next(nullptr){}
+};
+
+template <class T> 
+class ListaEnlazada {
+private:
+    //int n; // cantidad de datos agregada; 
+    Nodo<T>* raiz;
+    //ejercicio 1 
+    void recorrer_recursivo(Nodo<T>* actual) { // posi
+        if (actual == nullptr)return; //posi == n return; 
+        recorrer_recursivo(actual->next); 
+        cout << "<-"; 
+        actual->imprimirDato();
+    }
+    //ejercicio 2 
+    bool buscar_recursivo(Nodo<T>* actual, T obj) {
+        if (actual == nullptr)return false; //CASO BASE 
+        //CUERPO 
+        if (actual->dato == obj)return true; // en esta posicion esta X
+        //seguimos buscando 
+        return buscar_recursivo(actual->next, obj);
+
+    }
+
+public:
+    ListaEnlazada() { raiz = nullptr; }
+    void AnadirDatos(T datoo) {
+        if (raiz == nullptr) {
+            raiz = new Nodo<T>(datoo);
+        }
+        else {
+            Nodo<T>* aux = raiz;
+            while (aux->next != nullptr) { // vamos a iterar los datos hasta que nos encontremos al ultimo
+                aux = aux->next;
+            }
+            //aux = ultimo dato añadido
+            aux->next = new Nodo<T>(datoo);
+        }
+    }
+
+    // EJERCICIO 1
+    void RecorrerInverso() {
+        cout << "FINAL";
+        //recorrer_recursivo(raiz);
+        auto recorrer_rec = [](Nodo<T>* actual, auto& recorrer_rec) {
+            //contenido 
+            if (actual == nullptr)return; //posi == n return; 
+            recorrer_rec(actual->next, recorrer_rec);
+            cout << "<-";
+            actual->imprimirDato();
+            };
+        recorrer_rec(raiz, recorrer_rec);
+        cout << "<-INICIO\n";
+    }
+
+    // EJERCICIO 2
+    void Buscar(T obj) {  
+        /*
+        auto buscar_lambda = [](Nodo<T>* actual, T obj, auto& buscar_lambda) -> bool {
+            if (actual == nullptr)return false;
+            if (actual->dato == obj)return true; 
+            return buscar_lambda(actual->next, obj, buscar_lambda);
+         }; 
+        bool rpt = buscar_lambda(raiz, obj, buscar_lambda);*/ 
+        bool rpt = buscar_recursivo(raiz, obj); 
+        cout << ((rpt == 1) ? "True" : "False") << endl;
+    }
+
+    // EJERCICIO 3
+    void Sumar() {
+        auto sumarLista = [](Nodo<T>* cabeza){
+            Nodo <T>* aux = cabeza;
+            int acumulado = 0; 
+            while (aux != nullptr) {
+                acumulado += aux->dato; 
+                aux = aux->next; 
+            }
+            cout << "Suma total de los elementos de la lista: " << acumulado << "\n";
+        };
+        sumarLista(raiz); 
+    }
+
+    void RecorrerLista() {
+       // if(aux == nullptr)
+        Nodo<T>* aux = raiz; 
+        while (aux != nullptr) {
+            // vamos iterando dato por dato 
+            aux->imprimirDato(); cout << " -> ";
+            aux = aux->next; 
+        }
+        if(raiz != nullptr)cout << "END\n";
+        //final del bucle, raiz -> nullptr; 
+    }
+}; //Lista[3],
+
+
+
+int main(){
+    ListaEnlazada<int>* lista = new ListaEnlazada<int>(); 
+    lista->AnadirDatos(3); lista->AnadirDatos(7); lista->AnadirDatos(2); lista->AnadirDatos(9);// lista->AnadirDatos(3); lista->AnadirDatos(2);
+    lista->Sumar(); 
+    return 0;
+}

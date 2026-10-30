@@ -1,0 +1,50 @@
+//EJERCICIO 4 
+#include "pch.h"
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+using namespace System;
+
+struct Cliente {
+	string nombre; 
+	int dni; 
+};
+
+Cliente clientes[] = {
+ {"Juan", 12345678}, 
+ {"Ana", 87654321},
+ {"ana", 47554499},
+ {"Carlos", 83746873}
+};
+
+// TODAS LAS LETRAS LAS VOLVEMOS MAYUSCULAS O MINUSCULAS 
+void selection_sort(int n) {
+	for (int i = 0; i < n - 1; i++) {
+		int min_index = i; // incializamos como q el min sea en donde nos encontramos 
+		for (int j = i + 1; j < n; j++) { // -> buscamos el min del arr de la der 
+			if (clientes[j].nombre < clientes[min_index].nombre) {
+				min_index = j; // ordenamos alfabeticamente 
+			}
+		}
+		swap(clientes[i], clientes[min_index]);
+	}
+	cout << "Clientes ordenados por nombre:" << endl;
+	for (int i = 0; i < n; i++) {
+		cout << "Nombre: " << clientes[i].nombre << ", DNI: " << clientes[i].dni << endl;
+	}
+}
+int main(){
+	int  n= sizeof(clientes)/ sizeof(clientes[0]); // para los arreglos
+	for (int i = 0; i < n; i++) { //Convertimos todas las letras a mayusculas
+		for (char& j : clientes[i].nombre) {
+			if (j > 'Z') {
+				j -= 32; 
+			}
+		}
+	}
+	selection_sort(n);
+
+	
+}

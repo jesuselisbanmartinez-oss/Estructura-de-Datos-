@@ -1,0 +1,91 @@
+#include "pch.h"
+#include "iostream"
+#include "string"
+
+using namespace std; 
+using namespace System;
+
+/*
+//TENIENDO UN DATASET DE PERSONAS (DNI, NOMBRE, APELLIDO EDAD, ETC)
+// QUEREMOS FILTRAR AQUELLAS QUE SE LLAMEN X
+*/
+
+string Nombres[] = {"Matias", "Vivian", "Sofia", "Carla", "Martin", "Marcelo", "Alonso"}; // 7
+string Apellidos[] = {"Del Castillo", "Rios", "Vergara", "Gallardo", "Espinoza", "Alonso", "Chipana"}; // 7 
+
+
+class Persona {
+public: 
+    int dni;
+    string nombre, apellido;
+    int edad;
+    Persona(int d, string n, string a, int e) {
+        dni = d; nombre = n;
+        apellido = a; edad = e;
+    }
+};
+
+class Nodo {
+public:
+    Persona dato = Persona(0,"", "",0);
+    Nodo* next; // conexión que tiene 
+
+    Nodo(Persona datoo) {
+        next = nullptr;
+        dato = datoo; 
+    }
+    void imprimirDato() {
+        cout << "DNI: " << dato.dni << " || NOMBRE: " << dato.nombre << " || APELLIDO: " <<
+            dato.apellido << " || EDAD: " << dato.edad << "\n";
+    }
+    // Nodo(T datoo): dato(datoo), next(nullptr){}
+};
+//template <class T> 
+class ListaEnlazada {
+private:
+    Nodo* raiz;
+public:
+    ListaEnlazada() { raiz = nullptr; }
+    void AnadirDatos(Persona datoo) {
+        if (raiz == nullptr) {
+            raiz = new Nodo(datoo);
+        }
+        else {
+            Nodo* aux = raiz;
+            while (aux->next != nullptr) { // vamos a iterar los datos hasta que nos encontremos al ultimo
+                aux = aux->next;
+            }
+            //aux = ultimo dato añadido
+            aux->next = new Nodo(datoo);
+        }
+    }
+    void Filtrar(string nombre) {
+        cout << "PERSONAS CON NOMBRE " << nombre << ": \n"; 
+        Nodo* aux = raiz;
+        while (aux != nullptr) { // vamos a iterar los datos hasta que nos encontremos al ultimo
+            if (nombre == aux->dato.nombre) {
+                aux->imprimirDato(); 
+            }
+            aux = aux->next;
+        }
+    }
+
+}; 
+
+int main(){
+  ListaEnlazada* lista = new ListaEnlazada(); 
+    srand(time(nullptr)); 
+    for (int i = 0; i < 100; i++) {
+
+        string apellido = Apellidos[rand() % 7];
+        string nombre = Nombres[rand() % 7]; 
+       int dni = 100000 + rand() % (999999 - 100000 + 1); 
+        int edad = 18 + rand() % (100 - 18 + 1); 
+        Persona p = Persona(dni, nombre, apellido, edad); 
+       lista->AnadirDatos( Persona(dni, nombre, apellido, edad) ); 
+    }
+
+    //filtrar Sofia 
+  lista->Filtrar("Alonso"); 
+    return 0;
+}

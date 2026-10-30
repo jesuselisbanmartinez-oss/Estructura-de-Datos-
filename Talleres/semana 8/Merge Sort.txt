@@ -1,0 +1,68 @@
+// Source: https://usaco.guide/general/io
+
+#include <bits/stdc++.h>
+using namespace std;
+int arreglo[100000]; // 1e5 elementos 
+int cnt=0; 
+//MERGE
+void merge(int l, int h, int mid){
+    //proceso que se encargar de juntar los dos arreglos 
+    int ind1=0, ind2=0; 
+    vector<int> arr1, arr2; 
+    for(int i=l; i<=mid; i++)arr1.push_back(arreglo[i]); //compiamos los elm 
+    for(int i=mid+1; i<=h; i++)arr2.push_back(arreglo[i]); //derecha 
+
+    //2 arreglos ordenados -> unirlos 
+    // caso 1: comparamos dos elementos de dos arreglos que aun no estan vacios 
+    int ind=l; // donde vamos a ubicar el x valor en el arreglo[] 
+    while(ind1< int(arr1.size()) && ind2 < int(arr2.size())){
+        if(arr1[ind1] < arr2[ind2]){
+            arreglo[ind] = arr1[ind1]; 
+            ind1++; //vemos el siguiente valor mas pequeño del arr1
+        }
+        else{
+            arreglo[ind] = arr2[ind2]; 
+            ind2++; 
+        }
+        ind++; 
+        cnt++; 
+    }
+    //termina cuando ind1 >= arr1.size() || ind2 >=arr2.size() -> ya no compara 
+    while(ind1< int(arr1.size())){arreglo[ind] = arr1[ind1]; ind1++; ind++;cnt++;}
+    while(ind2 < int(arr2.size())){arreglo[ind] = arr2[ind2]; ind2++; ind++;cnt++;}
+    
+    return; 
+} // pro
+
+void merge_sort(int l, int h){ //divide y venceras 
+    // recursion 
+    //caso base 
+    if(l == h) return; //solo hay un elemento en el subarreglo -> ya esta ordenado
+    int mid= l+ (h - l)/2; // l + h / 2
+    merge_sort(l, mid); //evaluando [l, l+1, ... mid] 
+    merge_sort(mid+1, h); // eval [mid+1, mid+2, .. h]
+    //podemos juntar las dos mitades ordenadas 
+    merge(l, h, mid); 
+    return; 
+}
+
+
+int main() {
+    srand(time(nullptr)); 
+    int n= 1e5-1; 
+    for(int i=0; i < n; i++){ //creamos el arreglo desordenado 
+        arreglo[i] = rand()%100000;    
+    }
+    cout << "Arreglo desordenado: (Primeros 10 elementos)\n"; 
+    for(int i=0; i < 10; i++){ //creamos el arreglo desordenado 
+       cout << arreglo[i] << " "; 
+    }
+
+    merge_sort(0, n-1); 
+    cout << "\nArreglo ordenado: (Primeros 10 elementos)\n"; 
+    for(int i=0; i < 10; i++){ 
+       cout << arreglo[i] << " "; 
+    }
+    cout << "\nCantidad de iteraciones: " << cnt << "\n";
+ //1e10 a 1e6 iteraciones
+}

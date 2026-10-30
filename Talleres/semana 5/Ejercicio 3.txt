@@ -1,0 +1,76 @@
+#include "pch.h"
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+using namespace System;
+
+template <class T>
+class Nodo {
+public: 
+	T dato; 
+	Nodo<T>* next; 
+	Nodo(T d) {
+		this->dato = d; 
+		next = nullptr;
+	}
+	void ImprimirDato() {
+		cout << dato << endl;
+	}
+};
+
+
+template <class T>
+class Pila {
+private:
+	Nodo<T>* tope;
+	int cnt; 
+public:
+	Pila() {
+		tope = nullptr;
+		cnt = 0; 
+	}
+	bool esVacia() {
+		return tope == nullptr;
+	}
+	string desapilar() {
+		if (esVacia())return "";
+		Nodo<T>* aux = tope;
+		tope = tope->next;
+		if (aux->dato > 12.5) {
+			cnt++; 
+		}
+		return ((aux->dato > 12.5)?"Aprobado": "Desaprobado");
+	}
+	bool apilar(T dato) {
+		Nodo<T>* nodo = new Nodo<T>(dato);
+		if (esVacia()) {
+			tope = nodo; return 1;
+		}
+		nodo->next = tope;
+		tope = nodo; return 1;
+	}
+	int alumnosAprobados() {
+		return cnt;
+	}
+};
+
+int val[] = { 2,4,5, 6,      3, 2, 4, 3 };
+int main() {
+	srand(time(nullptr)); 
+	Pila<float>* pila = new Pila<float>(); 
+	cout << "Reporte de notas de los alumnos: \n"; 
+
+	for (int i = 0; i < 15; i++) {
+		float ft = rand() % 21; 
+		ft += (rand() % 100) / 100.0; 
+		ft = min(ft, 20.0f);
+		cout << ft; 
+		pila->apilar(ft);
+		cout << "         " << pila->desapilar() << "\n";
+	}
+	cout << endl; 
+	cout << "Cantidad de alumnos aprobados: " << pila->alumnosAprobados() << endl;
+	
+}
